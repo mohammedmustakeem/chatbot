@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO GROW</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        .submit-button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .chat-history {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e8e8e8;
+            border-radius: 4px;
+        }
+        .chat-history p {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .bot-response {
+            background-color: #d9edf7;
+        }
+        .user-input {
+            background-color: #fcf8e3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>ECO GROW: AI-Driven Q&A Demo</h1>
+    </div>
+
+    <div class="container">
+        <h2>Ask Your Question</h2>
+        <form method="post" action="/submit" enctype="multipart/form-data">
+            <label for="question">Input your question:</label>
+            <input type="text" id="question" name="question" placeholder="Type your question here..." required>
+            
+            <label for="file">Upload an image (optional):</label>
+            <input type="file" id="file" name="file" accept=".jpg, .jpeg, .png">
+
+            <input type="submit" value="Ask the question" class="submit-button">
+        </form>
+
+        <div class="chat-history">
+            <h3>Chat History</h3>
+            <div id="history-container">
+                <!-- Chat history will be appended here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch chat history and display
+        async function fetchChatHistory() {
+            const response = await fetch('/get_chat_history');
+            const data = await response.json();
+            const historyContainer = document.getElementById('history-container');
+            historyContainer.innerHTML = ''; // Clear previous history
+
+            data.forEach(chat => {
+                const chatElement = document.createElement('p');
+                chatElement.classList.add(chat.role === 'Bot' ? 'bot-response' : 'user-input');
+                chatElement.textContent = `${chat.role}: ${chat.text}`;
+                historyContainer.appendChild(chatElement);
+            });
+        }
+
+        // Load chat history on page load
+        window.onload = fetchChatHistory;
+    </script>
+
+</body>
+</html>
